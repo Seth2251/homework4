@@ -5,7 +5,7 @@ import IncomeExpense from './components/IncomeExpense.vue';
 import AddTransactions from './components/AddTransactions.vue';
 import TransactionList from './components/TransactionList.vue';
 
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const transactions = ref([])
 
@@ -36,12 +36,26 @@ const handelTransaction = (transactionData) => {
         text: transactionData.text,
         amount: transactionData.amount,
     })
+    saveToLocalStorage()
     
 }
 
 const handelDelete =(id) => {
     transactions.value = transactions.value.filter((x)=> x.id !== id)
+    saveToLocalStorage()
 }
+
+const saveToLocalStorage =() => {
+    localStorage.setItem('transactions', JSON.stringify(transactions.value))
+}
+
+onMounted( () => {
+    const savedTransactions = JSON.parse(localStorage.getItem('transactions'))
+
+    if(savedTransactions){
+        transactions.value= savedTransactions
+    }
+})
 
 </script>
 
